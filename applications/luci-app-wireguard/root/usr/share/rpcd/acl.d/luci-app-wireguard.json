@@ -1,0 +1,21 @@
+{
+	"luci-app-wireguard": {
+		"description": "Grant access to LuCI app wireguard",
+		"read": {
+			"ubus": {
+				"status.wireguard": [
+					"get_wg_instances"
+				]
+			},
+			"uci": ["network"]
+		},
+		"write": {
+			"ubus": {
+				"status.wireguard": [
+					"get_wg_instances"
+				]
+			},
+			"uci": ["network"]
+		}
+	}
+}
