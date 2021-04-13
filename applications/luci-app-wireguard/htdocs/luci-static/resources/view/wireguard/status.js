@@ -112,8 +112,8 @@ function generatePeerRow(name, columns, isTitle = false) {
 	if (isTitle) sectionStyle += ' background: rgba(0, 0, 0, 0.07);';
 
 	return E('div', {
-		'class': 'tr cbi-section-table-row',
-		'style': 'text-align: left;'
+		'class': 'tr peer cbi-section-table-row',
+		'style': 'text-align: left; display: none;'
 	}, [
 		E('div', {
 			'class': 'td',
@@ -209,7 +209,9 @@ return view.extend({
 			var rows = [
 				E('div',
 					{
-						'class': 'tr cbi-section-table-row'
+						'class': 'tr server cbi-section-table-row',
+						'data-tooltip': config.peers.length ?
+							_('Click to expand/hide Peers') : undefined
 					}, [
 					E('div',
 						{ 'class': 'td', 'style': 'font-size: 1.3em;' },
@@ -255,7 +257,10 @@ return view.extend({
 
 		var site = E('div', { 'class': 'cbi-section' }, [
 			E('h2', {}, _('WireGuard Status')),
-			E('div', {}, status)
+			E('div', {}, status),
+			E('script', {
+				'src': L.resource('view/wireguard/include/toggle.js')
+			})
 		]);
 
 		return site;
