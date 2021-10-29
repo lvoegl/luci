@@ -1843,6 +1843,10 @@ msgstr "禁用加密"
 msgid "Disable Inactivity Polling"
 msgstr "禁用不活动轮询"
 
+#: protocols/luci-proto-wireguard/htdocs/luci-static/resources/protocol/wireguard.js:159
+msgid "Disable the peer temporarily"
+msgstr ""
+
 #: modules/luci-mod-network/htdocs/luci-static/resources/view/network/wireless.js:895
 msgid "Disable this network"
 msgstr "禁用此网络"
@@ -1858,6 +1862,7 @@ msgstr "禁用此网络"
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pppoa.js:83
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pppoe.js:57
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pptp.js:70
+#: protocols/luci-proto-wireguard/htdocs/luci-static/resources/protocol/wireguard.js:159
 msgid "Disabled"
 msgstr "已禁用"
 

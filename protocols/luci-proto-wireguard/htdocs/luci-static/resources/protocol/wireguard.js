@@ -156,6 +156,10 @@ return network.registerProtocol('wireguard', {
 		o.datatype = 'string';
 		o.optional = true;
 
+		o = ss.option(form.Flag, 'disabled', _('Disabled'), _('Disable the peer temporarily'));
+		o.default = 0;
+		o.rmempty = false;
+
 		o = ss.option(form.Value, 'description', _('QR-Code'));
 		o.render = L.bind(function (view, section_id) {
 			var sections = uci.sections('network');

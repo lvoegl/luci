@@ -1825,6 +1825,10 @@ msgstr "Zakázať šifrovanie"
 msgid "Disable Inactivity Polling"
 msgstr ""
 
+#: protocols/luci-proto-wireguard/htdocs/luci-static/resources/protocol/wireguard.js:159
+msgid "Disable the peer temporarily"
+msgstr ""
+
 #: modules/luci-mod-network/htdocs/luci-static/resources/view/network/wireless.js:895
 msgid "Disable this network"
 msgstr "Zakázať túto sieť"
@@ -1840,6 +1844,7 @@ msgstr "Zakázať túto sieť"
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pppoa.js:83
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pppoe.js:57
 #: protocols/luci-proto-ppp/htdocs/luci-static/resources/protocol/pptp.js:70
+#: protocols/luci-proto-wireguard/htdocs/luci-static/resources/protocol/wireguard.js:159
 msgid "Disabled"
 msgstr "Zakázané"
 
