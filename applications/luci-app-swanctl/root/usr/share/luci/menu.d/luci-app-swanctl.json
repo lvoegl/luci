@@ -1,0 +1,15 @@
+{
+	"admin/vpn/swanctl": {
+		"title": "swanctl",
+		"order": 90,
+		"action": {
+			"type": "view",
+			"path": "swanctl/swanctl"
+		},
+		"depends": {
+			"acl": [
+				"luci-app-swanctl"
+			]
+		}
+	}
+}

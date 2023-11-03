@@ -1,14 +1,16 @@
 # Copyright 2021 Nicholas Smith (nicholas@nbembedded.com)
+# Copyright (C) 2023 TDT AG <development@tdt.de>
+#
 # This is free software, licensed under the GNU General Public License v2.
 
 include $(TOPDIR)/rules.mk
 
 PKG_LICENSE:=GPL-2.0-or-later
-PKG_MAINTAINER:=Nicholas Smith <nicholas@nbembedded.com>
+PKG_MAINTAINER:=Nicholas Smith <nicholas@nbembedded.com>, Lukas Voegl <lvoegl@tdt.de>
 
-LUCI_TITLE:=LuCI support for IPSec via Strongswan
-LUCI_DESCRIPTION:=Allows configuration of Strongswan IPSec settings
-LUCI_DEPENDS:=+strongswan-ipsec
+LUCI_TITLE:=LuCI support for swanctl
+LUCI_DESCRIPTION:=Configuration for swanctl
+LUCI_DEPENDS:=+strongswan-swanctl
 
 include ../../luci.mk
 

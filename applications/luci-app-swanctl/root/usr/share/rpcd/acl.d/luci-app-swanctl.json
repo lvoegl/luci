@@ -1,0 +1,11 @@
+{
+	"luci-app-swanctl": {
+		"description": "Grant access to luci-app-swanctl",
+		"read": {
+			"uci": [ "ipsec" ]
+		},
+		"write": {
+			"uci": [ "ipsec" ]
+		}
+	}
+}
