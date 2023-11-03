@@ -11,5 +11,18 @@
 				"luci-app-swanctl"
 			]
 		}
+	},
+	"admin/status/swanctl": {
+		"title": "swanctl",
+		"order": 90,
+		"action": {
+			"type": "view",
+			"path": "swanctl/status"
+		},
+		"depends": {
+			"acl": [
+				"luci-app-swanctl"
+			]
+		}
 	}
 }

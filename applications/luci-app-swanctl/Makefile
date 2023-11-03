@@ -9,8 +9,8 @@ PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Nicholas Smith <nicholas@nbembedded.com>, Lukas Voegl <lvoegl@tdt.de>
 
 LUCI_TITLE:=LuCI support for swanctl
-LUCI_DESCRIPTION:=Configuration for swanctl
-LUCI_DEPENDS:=+strongswan-swanctl
+LUCI_DESCRIPTION:=Status and configuration for swanctl
+LUCI_DEPENDS:=+strongswan-swanctl +swanmon
 
 include ../../luci.mk
 
