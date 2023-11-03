@@ -108,9 +108,20 @@ return view.extend({
 			return this.super('load', [section_id]);
 		};
 
-		o = s.option(form.Value, 'tunnel', _('Tunnel'),
+		o = s.option(form.MultiValue, 'tunnel', _('Tunnel'),
 			_('Name of ESP/AH (phase 2) section'));
 		o.required = true;
+		o.load = function (section_id) {
+			this.keylist = [];
+			this.vallist = [];
+
+			var sections = uci.sections('ipsec', 'tunnel');
+			sections.forEach(L.bind(function (section) {
+				this.value(section['.name']);
+			}, this));
+
+			return this.super('load', [section_id]);
+		};
 
 		// Tunnel Configuration
 		s = m.section(form.TypedSection, 'tunnel', _('Tunnel Configuration'));
