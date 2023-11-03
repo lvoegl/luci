@@ -14,6 +14,7 @@ return view.extend({
 
 		m = new form.Map('ipsec', _('swanctl Configuration'),
 			_('Configure strongSwan for secure VPN connections.'));
+		m.tabbed = true;
 
 		// strongSwan General Settings
 		s = m.section(form.TypedSection, 'ipsec', _('General Settings'));
@@ -39,6 +40,7 @@ return view.extend({
 		// Remote Configuration
 		s = m.section(form.TypedSection, 'remote', _('Remote Configuration'));
 		s.anonymous = false;
+		s.addremove = true;
 
 		o = s.option(form.Flag, 'enabled', _('Enabled'),
 			_('Configuration is enabled or not'));
@@ -126,6 +128,7 @@ return view.extend({
 		// Tunnel Configuration
 		s = m.section(form.TypedSection, 'tunnel', _('Tunnel Configuration'));
 		s.anonymous = false;
+		s.addremove = true;
 
 		o = s.option(form.DynamicList, 'local_subnet', _('Local Subnet'),
 			_('Local network(s)'));
@@ -191,6 +194,7 @@ return view.extend({
 		// Crypto Proposals
 		s = m.section(form.TypedSection, 'crypto_proposal', _('Encryption Proposals'));
 		s.anonymous = false;
+		s.addremove = true;
 
 		var encryptionAlgorithms = [
 			'3des',
