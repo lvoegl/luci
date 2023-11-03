@@ -1,6 +1,7 @@
 'use strict';
 'require view';
 'require form';
+'require uci';
 'require tools.widgets as widgets';
 
 return view.extend({
@@ -88,82 +89,38 @@ return view.extend({
 		o.value('accept');
 		o.default = 'yes';
 
-		o = s.option(form.ListValue, 'crypto_proposal', _('Crypto Proposal'),
+		o = s.option(form.MultiValue, 'crypto_proposal', _('Crypto Proposal'),
 			_('List of IKE (phase 1) proposals to use for authentication'));
-		o.value('encryption_algorithm');
-		o.value('hash_algorithm');
-		o.value('dh_group');
-		o.value('prf_algorithm');
+		o.required = true;
+		o.load = function (section_id) {
+			this.keylist = [];
+			this.vallist = [];
+
+			var sections = uci.sections('ipsec', 'crypto_proposal');
+			sections.forEach(L.bind(function (section) {
+				this.value(section['.name']);
+			}, this));
+
+			return this.super('load', [section_id]);
+		};
 
 		o = s.option(form.Value, 'tunnel', _('Tunnel'),
 			_('Name of ESP/AH (phase 2) section'));
 		o.required = true;
 
-		o = s.option(form.Value, 'authentication_method',
-			_('Authentication Method'), _('IKE authentication (phase 1)'));
-		o.datatype = 'string';
-
-		s = m.section(form.TypedSection, 'ipsec',
-			_('strongSwan General Settings'));
-		s.anonymous = true;
-
-		o = s.option(form.ListValue, 'encryption_algorithm',
-			_('Encryption Algorithm'), '%s (aes128, aes192, aes256, 3des)'.format(_('Encryption method')));
-		o.value('aes128');
-		o.value('aes192');
-		o.value('aes256');
-		o.value('3des');
-		o.required = true;
-
-		o = s.option(form.ListValue, 'hash_algorithm', _('Hash Algorithm'),
-			'%s (md5, sha1, sha2, ...)'.format(_('Hash algorithm')));
-		o.value('md5');
-		o.value('sha1');
-		o.value('sha2');
-		o.value('sha256');
-		o.value('sha384');
-		o.value('sha512');
-		o.value('sha3_256');
-		o.value('sha3_384');
-		o.value('sha3_512');
-		o.value('blake2s256');
-		o.value('blake2b512');
-		o.value('blake2s256');
-		o.value('blake2b512');
-		o.value('whirlpool');
-		o.value('tiger');
-		o.required = true;
-
-		o = s.option(form.ListValue, 'dh_group', _('Diffie-Hellman Group'),
-			'%s (modp768, modp1024, ...)'.format(_('Diffie-Hellman exponentiation')));
-		o.value('modp768');
-		o.value('modp1024');
-		o.value('modp1536');
-		o.value('modp2048');
-		o.value('modp3072');
-		o.value('modp4096');
-		o.required = true;
-
-		o = s.option(form.ListValue, 'prf_algorithm', _('PRF Algorithm'),
-			_('Pseudo-Random Functions to use with IKE'));
-		o.value('prf_hmac_md5');
-		o.value('prfmd5');
-		o.value('prfsha1');
-		o.value('prfsha256');
-		o.value('pfsha384');
-		o.value('prfsha512');
-
 		// Tunnel Configuration
 		s = m.section(form.TypedSection, 'tunnel', _('Tunnel Configuration'));
 		s.anonymous = false;
 
-		o = s.option(form.Value, 'local_subnet', _('Local Subnet'),
+		o = s.option(form.DynamicList, 'local_subnet', _('Local Subnet'),
 			_('Local network(s)'));
+		o.datatype = 'subnet';
 		o.placeholder = '192.168.1.1/24';
 		o.required = true;
 
-		o = s.option(form.Value, 'remote_subnet', _('Remote Subnet'),
+		o = s.option(form.DynamicList, 'remote_subnet', _('Remote Subnet'),
 			_('Remote network(s)'));
+		o.datatype = 'subnet';
 		o.placeholder = '192.168.2.1/24';
 		o.required = true;
 
@@ -171,13 +128,20 @@ return view.extend({
 			_('NAT range for tunnels with overlapping IP addresses'));
 		o.datatype = 'subnet';
 
-		o = s.option(form.ListValue, 'crypto_proposal',
+		o = s.option(form.MultiValue, 'crypto_proposal',
 			_('Crypto Proposal (Phase 2)'), _('List of ESP (phase two) proposals'));
-		o.value('encryption_algorithm');
-		o.value('hash_algorithm');
-		o.value('dh_group');
-		o.value('prf_algorithm');
 		o.required = true;
+		o.load = function (section_id) {
+			this.keylist = [];
+			this.vallist = [];
+
+			var sections = uci.sections('ipsec', 'crypto_proposal');
+			sections.forEach(L.bind(function (section) {
+				this.value(section['.name']);
+			}, this));
+
+			return this.super('load', [section_id]);
+		};
 
 		o = s.option(form.ListValue, 'startaction', _('Start Action'),
 			_('Action on initial configuration load'));
@@ -189,6 +153,147 @@ return view.extend({
 		o = s.option(form.Value, 'updown', _('Up/Down Script Path'),
 			_('Path to script to run on CHILD_SA up/down events'));
 		o.datatype = 'filepath';
+
+		// Crypto Proposals
+		s = m.section(form.TypedSection, 'crypto_proposal', _('Encryption Proposals'));
+		s.anonymous = false;
+
+		var encryptionAlgorithms = [
+			'3des',
+			'cast128',
+			'blowfish128',
+			'blowfish192',
+			'blowfish256',
+			'null',
+			'aes128',
+			'aes192',
+			'aes256',
+			'aes128ctr',
+			'aes192ctr',
+			'aes256ctr',
+			'camellia128',
+			'camellia192',
+			'camellia256',
+			'camellia128ctr',
+			'camellia192ctr',
+			'camellia256ctr'
+		];
+		var authenticatedEncryptionAlgorithms = [
+			'aes128ccm64',
+			'aes192ccm64',
+			'aes256ccm64',
+			'aes128ccm96',
+			'aes192ccm96',
+			'aes256ccm96',
+			'aes128ccm128',
+			'aes192ccm128',
+			'aes256ccm128',
+			'aes128gcm64',
+			'aes192gcm64',
+			'aes256gcm64',
+			'aes128gcm96',
+			'aes192gcm96',
+			'aes256gcm96',
+			'aes128gcm128',
+			'aes192gcm128',
+			'aes256gcm128',
+			'aes128gmac',
+			'aes192gmac',
+			'aes256gmac',
+			'camellia128ccm64',
+			'camellia192ccm64',
+			'camellia256ccm64',
+			'camellia128ccm96',
+			'camellia192ccm96',
+			'camellia256ccm96',
+			'camellia128ccm128',
+			'camellia192ccm128',
+			'camellia256ccm128',
+			'chacha20poly1305'
+		];		
+		o = s.option(form.ListValue, 'encryption_algorithm', _('Encryption Algorithm'),
+			'%s (aes128, aes192, aes256, 3des)'.format(_('Encryption method')));
+		encryptionAlgorithms.forEach(function (algorithm) {
+			o.value(algorithm);
+		});
+		authenticatedEncryptionAlgorithms.forEach(function (algorithm) {
+			o.value(algorithm);
+		});
+		o.required = true;
+
+		o = s.option(form.ListValue, 'hash_algorithm', _('Hash Algorithm'),
+			'%s (md5, sha1, sha2, ...)'.format(_('Hash algorithm')));
+		o.validate = function (section_id, value) {
+			var encryptionAlgorithm = this.section.formvalue(section_id, 'encryption_algorithm');
+			if (authenticatedEncryptionAlgorithms.includes(encryptionAlgorithm)) {
+				if (value != '') {
+					return _('No Hash Algorithm must be configured when using an Authenticated Encryption Algorithm');
+				}
+			} else if (value == ''){
+				return _('Hash Algorithm must be configured when using a classic Encryption Algorithm');
+			}
+
+			return true;
+		};
+		o.value('');
+		o.value('md5');
+		o.value('md5_128');
+		o.value('sha1');
+		o.value('sha1_160');
+		o.value('aesxcbc');
+		o.value('aescmac');
+		o.value('aes128gmac');
+		o.value('aes192gmac');
+		o.value('aes256gmac');
+		o.value('sha256');
+		o.value('sha384');
+		o.value('sha512');
+		o.value('sha256_96');
+
+		o = s.option(form.ListValue, 'dh_group', _('Diffie-Hellman Group'),
+			'%s (modp768, modp1024, ...)'.format(_('Diffie-Hellman exponentiation')));
+		o.value('modp768');
+		o.value('modp1024');
+		o.value('modp1536');
+		o.value('modp2048');
+		o.value('modp3072');
+		o.value('modp4096');
+		o.value('modp6144');
+		o.value('modp8192');
+		o.value('modp1024s160');
+		o.value('modp2048s224');
+		o.value('modp2048s256');
+		o.value('ecp192');
+		o.value('ecp224');
+		o.value('ecp256');
+		o.value('ecp384');
+		o.value('ecp521');
+		o.value('ecp224bp');
+		o.value('ecp256bp');
+		o.value('ecp384bp');
+		o.value('ecp512bp');
+		o.value('curve25519');
+		o.value('curve448');
+		o.required = true;
+
+		o = s.option(form.ListValue, 'prf_algorithm', _('PRF Algorithm'),
+		_('Pseudo-Random Functions to use with IKE'));
+		o.validate = function (section_id, value) {
+			var encryptionAlgorithm = this.section.formvalue(section_id, 'encryption_algorithm');
+			if (authenticatedEncryptionAlgorithms.includes(encryptionAlgorithm) && value == '') {
+				return _('PRF Algorithm must be configured when using an Authenticated Encryption Algorithm');
+			}
+
+			return true;
+		};
+		o.value('');
+		o.value('prfmd5');
+		o.value('prfsha1');
+		o.value('prfaesxcbc');
+		o.value('prfaescmac');
+		o.value('prfsha256');
+		o.value('prfsha384');
+		o.value('prfsha512');
 
 		return m.render();
 	}
