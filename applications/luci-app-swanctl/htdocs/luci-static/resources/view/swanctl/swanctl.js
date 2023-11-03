@@ -11,8 +11,7 @@ return view.extend({
 			_('Configure strongSwan for secure VPN connections.'));
 
 		// strongSwan General Settings
-		s = m.section(form.TypedSection, 'ipsec',
-			_('strongSwan General Settings'));
+		s = m.section(form.TypedSection, 'ipsec', _('General Settings'));
 		s.anonymous = true;
 
 		o = s.option(widgets.ZoneSelect, 'zone', _('Zone'),
@@ -20,7 +19,7 @@ return view.extend({
 		o.default = 'lan';
 		o.multiple = true;
 
-		o = s.option(widgets.NetworkSelect, 'listen', _('Listen Interfaces'),
+		o = s.option(widgets.NetworkSelect, 'listen', _('Listening Interfaces'),
 			_('Interfaces that accept VPN traffic'));
 		o.datatype = 'interface';
 		o.placeholder = _('Select an interface or leave empty for all interfaces');
@@ -28,7 +27,7 @@ return view.extend({
 		o.multiple = true;
 
 		o = s.option(form.Value, 'debug', _('Debug Level'),
-			_('Logs written to /var/log/charon.log'));
+			_('Logs written to %s').format('/var/log/charon.log'));
 		o.default = '0';
 		o.datatype = 'uinteger';
 
@@ -66,7 +65,7 @@ return view.extend({
 		o.placeholder = 'C=US, O=Acme Corporation, CN=soho';
 
 		o = s.option(form.ListValue, 'authentication_method',
-			_('Authentication Method'), _('IKE authentication (phase 1).'));
+			_('Authentication Method'), _('IKE authentication (phase 1)'));
 		o.value('psk', 'Pre-shared Key');
 		o.value('pubkey', 'Public Key');
 		o.required = true;
@@ -82,7 +81,7 @@ return view.extend({
 		o.default = '1';
 
 		o = s.option(form.ListValue, 'fragmentation', _('IKE Fragmentation'),
-			_('Use IKE fragmentation (yes, no, force, accept)'));
+			'%s (yes, no, force, accept)'.format(_('Use IKE fragmentation')));
 		o.value('yes');
 		o.value('no');
 		o.value('force');
@@ -109,7 +108,7 @@ return view.extend({
 		s.anonymous = true;
 
 		o = s.option(form.ListValue, 'encryption_algorithm',
-			_('Encryption Algorithm'), _('Encryption method (aes128, aes192, aes256, 3des)'));
+			_('Encryption Algorithm'), '%s (aes128, aes192, aes256, 3des)'.format(_('Encryption method')));
 		o.value('aes128');
 		o.value('aes192');
 		o.value('aes256');
@@ -117,7 +116,7 @@ return view.extend({
 		o.required = true;
 
 		o = s.option(form.ListValue, 'hash_algorithm', _('Hash Algorithm'),
-			_('Hash algorithm (md5, sha1, sha2, ...)'));
+			'%s (md5, sha1, sha2, ...)'.format(_('Hash algorithm')));
 		o.value('md5');
 		o.value('sha1');
 		o.value('sha2');
@@ -136,7 +135,7 @@ return view.extend({
 		o.required = true;
 
 		o = s.option(form.ListValue, 'dh_group', _('Diffie-Hellman Group'),
-			_('Diffie-Hellman exponentiation (modp768, modp1024, ...)'));
+			'%s (modp768, modp1024, ...)'.format(_('Diffie-Hellman exponentiation')));
 		o.value('modp768');
 		o.value('modp1024');
 		o.value('modp1536');
