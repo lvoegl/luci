@@ -5,6 +5,10 @@
 'require tools.widgets as widgets';
 
 return view.extend({
+	load: function () {
+		return uci.load('network');
+	},
+
 	render: function () {
 		var m, s, o;
 
@@ -127,6 +131,25 @@ return view.extend({
 		o = s.option(form.Value, 'local_nat', _('Local NAT'),
 			_('NAT range for tunnels with overlapping IP addresses'));
 		o.datatype = 'subnet';
+
+		o = s.option(form.ListValue, 'if_id', ('XFRM Interface ID'),
+			_('XFRM interface ID set on input and output interfaces'));
+		o.load = function (section_id) {
+			this.keylist = [];
+			this.vallist = [];
+
+			var xfrmSections = uci.sections('network').filter(function (section) {
+				return section.proto == 'xfrm';
+			});
+
+			this.value('');
+			xfrmSections.forEach(L.bind(function (section) {
+				this.value(section.ifid,
+					'%s (%s)'.format(section.ifid, section['.name']));
+			}, this));
+
+			return this.super('load', [section_id]);
+		}
 
 		o = s.option(form.MultiValue, 'crypto_proposal',
 			_('Crypto Proposal (Phase 2)'), _('List of ESP (phase two) proposals'));
